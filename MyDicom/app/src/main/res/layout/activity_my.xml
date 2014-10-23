@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/darker_gray"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/brPlus"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_margin="0px"
+            android:text="B+" />
+
+        <Button
+            android:id="@+id/brMinus"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:layout_margin="0px"
+            android:text="B-" />
+
+        <Button
+            android:id="@+id/inverse"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:text="I" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:background="@android:color/black" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end"
+        android:background="@android:color/darker_gray"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/cnPlus"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:text="C+" />
+
+        <Button
+            android:id="@+id/cnMinus"
+            android:layout_width="100px"
+            android:layout_height="100px"
+            android:text="C-" />
+    </LinearLayout>
+
+</LinearLayout>
