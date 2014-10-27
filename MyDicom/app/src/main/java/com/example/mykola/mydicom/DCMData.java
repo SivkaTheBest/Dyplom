@@ -20,6 +20,15 @@ import java.util.List;
 public class DCMData {
 
     List<ImageData> frames = new LinkedList<ImageData>();
+    private int brightness;
+    private double contrast;
+    private boolean isInverted;
+    private boolean isLoaded;
+    private List<String> tags = new LinkedList<String>();
+
+    public DCMData() {
+        setDefault();
+    }
 
     public boolean isLoaded() {
         return isLoaded;
@@ -27,15 +36,6 @@ public class DCMData {
 
     private void setLoaded(boolean isLoaded) {
         this.isLoaded = isLoaded;
-    }
-
-    private int brightness;
-    private double contrast;
-    private boolean isInverted;
-    private boolean isLoaded;
-
-    public DCMData() {
-        setDefault();
     }
 
     public void setDefault() {
@@ -125,13 +125,13 @@ public class DCMData {
 
     public void addContrast(double contrast) {
         this.contrast += contrast;
-        if(this.contrast > 2)
+        if (this.contrast > 2)
             this.contrast = 2;
     }
 
     public void minusContrast(double contrast) {
         this.contrast -= contrast;
-        if(this.contrast < 0)
+        if (this.contrast < 0)
             this.contrast = 0;
     }
 
@@ -147,8 +147,6 @@ public class DCMData {
         return contrast;
     }
 
-    private List<String> tags = new LinkedList<String>();
-
     private void readTags() {
 
     }
@@ -156,10 +154,9 @@ public class DCMData {
     private class TagDictionary {
 
 
-
         private class Tag {
-           private String name;
-           private String tag;
+            private String name;
+            private String tag;
         }
     }
 
@@ -182,7 +179,9 @@ public class DCMData {
             invertImage();
             contrastImage();
             brightImage();
-            return Bitmap.createBitmap(workBuffer, sizeX, sizeY, Bitmap.Config.ARGB_8888);
+            rainbowImage();
+
+            return Bitmap.createBitmap(workBuffer, sizeX, sizeY, Bitmap.Config.RGB_565);
         }
 
         private void copyBuffer() {
@@ -204,74 +203,59 @@ public class DCMData {
         }
 
         private void contrastImage() {
-            int A, R, G, B;
+            int value;
             int length = sizeX * sizeY;
 
             for (int i = 0; i < length; i++) {
-                A = Color.alpha(workBuffer[i]);
-                R = Color.red(workBuffer[i]);
-                G = Color.green(workBuffer[i]);
-                B = Color.blue(workBuffer[i]);
+                value = workBuffer[i] & 0x000000ff;
 
-                R = (int) (((((R / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                if (R < 0) {
-                    R = 0;
-                } else if (R > 255) {
-                    R = 255;
+                value = (int) (((((value / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+                if (value < 0) {
+                    value = 0;
+                } else if (value > 255) {
+                    value = 255;
                 }
 
-                G = (int) (((((G / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                if (G < 0) {
-                    G = 0;
-                } else if (G > 255) {
-                    G = 255;
-                }
-
-                B = (int) (((((B / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-                if (B < 0) {
-                    B = 0;
-                } else if (B > 255) {
-                    B = 255;
-                }
-
-                workBuffer[i] = Color.argb(A, R, G, B);
+                workBuffer[i] = Color.rgb(value, value, value);
             }
         }
 
         private void brightImage() {
             if (brightness != 0) {
                 int length = sizeX * sizeY;
-                int A, R, G, B;
+                int value;
 
                 for (int i = 0; i < length; i++) {
+                    value = workBuffer[i] & 0x000000ff;
 
-                    A = Color.alpha(workBuffer[i]);
-                    R = Color.red(workBuffer[i]);
-                    G = Color.green(workBuffer[i]);
-                    B = Color.blue(workBuffer[i]);
-
-                    R += brightness;
-                    if (R > 255) {
-                        R = 255;
-                    } else if (R < 0) {
-                        R = 0;
+                    value += brightness;
+                    if (value > 255) {
+                        value = 255;
+                    } else if (value < 0) {
+                        value = 0;
                     }
 
-                    G += brightness;
-                    if (G > 255) {
-                        G = 255;
-                    } else if (G < 0) {
-                        G = 0;
-                    }
+                    workBuffer[i] = Color.rgb(value, value, value);
+                }
+            }
+        }
 
-                    B += brightness;
-                    if (B > 255) {
-                        B = 255;
-                    } else if (B < 0) {
-                        B = 0;
-                    }
+        private void rainbowImage() {
+            boolean isRainbow = true;
+            float hsb[] = new float[3];
 
-                    workBuffer[i] = Color.argb(A, R, G, B);
+            if (isRainbow) {
+                int length = sizeX * sizeY;
+                int value;
+                hsb[1] = 1f;
+
+                for (int i = 0; i < length; i++) {
+                    value = workBuffer[i] & 0x000000ff;
+
+                    hsb[0] = 360 - ((float)value  / 255)  * 360;
+                    hsb[2] = (float)value  / 255;
+
+                    workBuffer[i] = Color.HSVToColor(hsb);
                 }
             }
         }
