@@ -7,8 +7,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,12 +40,6 @@ public class MyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
-        Button brPlus = (Button) findViewById(R.id.brPlus);
-        Button brMinus = (Button) findViewById(R.id.brMinus);
-
-        Button cnPlus = (Button) findViewById(R.id.cnPlus);
-        Button cnMinus = (Button) findViewById(R.id.cnMinus);
-
         Button normal = (Button) findViewById(R.id.normal);
         Button inverse = (Button) findViewById(R.id.inverse);
         Button rainbow = (Button) findViewById(R.id.rainbow);
@@ -62,45 +60,13 @@ public class MyActivity extends Activity {
                     textPanel.setBackgroundColor(0x00ffffff);
                 } else {
                     textPanel.setTextColor(0xff000000);
-                    textPanel.setBackgroundColor(0x66ffffff);
+                    textPanel.setBackgroundColor(0x55ffffff);
                 }
             }
         };
 
         dcmInfo.setOnClickListener(infoPanelListener);
         imgInfo.setOnClickListener(infoPanelListener);
-
-        cnPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dcmData.addContrast(0.1);
-                redrawImage();
-            }
-        });
-
-        cnMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dcmData.minusContrast(0.1);
-                redrawImage();
-            }
-        });
-
-        brPlus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dcmData.addBrightness(10);
-                redrawImage();
-            }
-        });
-
-        brMinus.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dcmData.minusBrightness(10);
-                redrawImage();
-            }
-        });
 
         inverse.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,6 +100,58 @@ public class MyActivity extends Activity {
                 printInfo();
             }
         });
+
+        LinearLayout.LayoutParams layoutParams =
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.setMargins(0, 0, 0, 0);
+
+        VerticalSeekBar contrastBar = new VerticalSeekBar(this);
+        contrastBar.setLayoutParams(layoutParams);
+        contrastBar.setMax(100);
+        contrastBar.setProgress(25);
+        contrastBar.setPadding(30, 20, 30, 20);
+
+        contrastBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                dcmData.setContrast(progress / 100f * 2 + 0.5f);
+                redrawImage();
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        LinearLayout rightPanel = (LinearLayout)findViewById(R.id.rightPanel);
+        rightPanel.addView(contrastBar);
+
+        VerticalSeekBar brightnessBar = new VerticalSeekBar(this);
+        brightnessBar.setLayoutParams(layoutParams);
+        brightnessBar.setMax(100);
+        brightnessBar.setProgress(50);
+        brightnessBar.setPadding(30, 20, 30, 20);
+
+        brightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                dcmData.setBrightness((int)(progress / 100f * 500) - 250);
+                redrawImage();
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ABOVE, R.id.normal);
+        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+        RelativeLayout leftPanel = (RelativeLayout)findViewById(R.id.leftPanel);
+        leftPanel.addView(brightnessBar, params);
     }
 
     private void redrawImage() {

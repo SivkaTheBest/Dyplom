@@ -35,6 +35,14 @@ public class DCMData {
         return isLoaded;
     }
 
+    public void setContrast(float contrast) {
+        this.contrast = contrast;
+    }
+
+    public void setBrightness(int brightness) {
+        this.brightness = brightness;
+    }
+
     private void setLoaded(boolean isLoaded) {
         this.isLoaded = isLoaded;
     }

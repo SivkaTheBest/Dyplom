@@ -15,21 +15,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="left"
-        android:background="#55ffffff"
+        android:background="#11ffffff"
         android:orientation="vertical">
-
-        <Button
-            android:id="@+id/brPlus"
-            android:layout_width="100px"
-            android:layout_height="100px"
-            android:text="B+" />
-
-        <Button
-            android:id="@+id/brMinus"
-            android:layout_below="@+id/brPlus"
-            android:layout_width="100px"
-            android:layout_height="100px"
-            android:text="B-" />
 
         <Button
             android:id="@+id/rainbow"
@@ -85,20 +72,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="right"
         android:layout_alignParentRight="true"
-        android:background="#55ffffff"
+        android:background="#11ffffff"
         android:orientation="vertical">
-
-        <Button
-            android:id="@+id/cnPlus"
-            android:layout_width="100px"
-            android:layout_height="100px"
-            android:text="C+" />
-
-        <Button
-            android:id="@+id/cnMinus"
-            android:layout_width="100px"
-            android:layout_height="100px"
-            android:text="C-" />
     </LinearLayout>
 
 </RelativeLayout>
