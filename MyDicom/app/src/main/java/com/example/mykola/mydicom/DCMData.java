@@ -23,8 +23,10 @@ public class DCMData {
     private int brightness;
     private double contrast;
     private boolean isInverted;
+    private boolean isRainbowed;
     private boolean isLoaded;
-    private List<String> tags = new LinkedList<String>();
+    private String fileName;
+    private MetaData metaData;
 
     public DCMData() {
         setDefault();
@@ -42,19 +44,33 @@ public class DCMData {
         brightness = 0;
         contrast = 1;
         isInverted = false;
+        isRainbowed = false;
     }
 
     public void loadDCM(String fileName) {
         frames.clear();
+        metaData = new MetaData();
+
         setLoaded(true);
-        // Open the dicom file from sdcard
+
         Stream stream = new Stream();
         stream.openFileRead(fileName);
-
-        // Build an internal representation of the Dicom file. Tags larger than 256 bytes
-        //  will be loaded on demand from the file
         DataSet dataSet = CodecFactory.load(new StreamReader(stream), 256);
         int framesSize = 0;
+
+        String manufacturer = dataSet.getString(0x0008, 0, 0x0070, 0);
+        String manufacturerModel = dataSet.getString(0x0008, 0, 0x1090, 0);
+        String patientName = dataSet.getString(0x0010, 0, 0x0010, 0);
+        String patientID = dataSet.getString(0x0010, 0, 0x0020, 0);
+        String patientAge = dataSet.getString(0x0010, 0, 0x1010, 0);
+        String patientWeight = dataSet.getString(0x0010, 0, 0x1030, 0);
+
+        metaData.setManufacturer(manufacturer);
+        metaData.setManufacturerModel(manufacturerModel);
+        metaData.setPatientName(patientName);
+        metaData.setPatientID(patientID);
+        metaData.setPatientAge(patientAge);
+        metaData.setPatientWeight(patientWeight);
 
         try {
             for (int i = 0; ; i++) {
@@ -99,6 +115,7 @@ public class DCMData {
             bitmap.getBitmap(image.getSizeX(), image.getSizeY(), 0, 0,
                     image.getSizeX(), image.getSizeY(), buffer, requiredSize);
             frames.add(new ImageData(buffer, image.getSizeX(), image.getSizeY()));
+            this.fileName = fileName;
         }
     }
 
@@ -108,6 +125,10 @@ public class DCMData {
 
     public int getBrightness() {
         return brightness;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 
     public void addBrightness(int brightness) {
@@ -147,16 +168,100 @@ public class DCMData {
         return contrast;
     }
 
-    private void readTags() {
 
+    public void rainbow() {
+        isRainbowed = !isRainbowed;
     }
 
-    private class TagDictionary {
+    public boolean isRainbowed() {
+        return isRainbowed;
+    }
 
+    public String getColorSchema() {
+        if(isRainbowed() && isInverted()) {
+            return "негатив + псевдо";
+        }
 
-        private class Tag {
-            private String name;
-            private String tag;
+        if(isRainbowed() ) {
+            return "псевдо";
+        }
+
+        if(isInverted()) {
+            return "негатив";
+        }
+
+        return "норма";
+    }
+
+    public String getMetaInfo() {
+        return metaData.toString();
+    }
+
+    private class MetaData {
+        private String manufacturer;
+        private String manufacturerModel;
+
+        private String patientName;
+        private String patientID;
+        private String patientAge;
+        private String patientWeight;
+
+        public String getManufacturer() {
+            return manufacturer;
+        }
+
+        public void setManufacturer(String manufacturer) {
+            this.manufacturer = manufacturer;
+        }
+
+        public String getManufacturerModel() {
+            return manufacturerModel;
+        }
+
+        public void setManufacturerModel(String manufacturerModel) {
+            this.manufacturerModel = manufacturerModel;
+        }
+
+        public String getPatientName() {
+            return patientName;
+        }
+
+        public void setPatientName(String patientName) {
+            this.patientName = patientName;
+        }
+
+        public String getPatientID() {
+            return patientID;
+        }
+
+        public void setPatientID(String patientID) {
+            this.patientID = patientID;
+        }
+
+        public String getPatientAge() {
+            return patientAge;
+        }
+
+        public void setPatientAge(String patientAge) {
+            this.patientAge = patientAge;
+        }
+
+        public String getPatientWeight() {
+            return patientWeight;
+        }
+
+        public void setPatientWeight(String patientWeight) {
+            this.patientWeight = patientWeight;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder bld = new StringBuilder();
+            bld.append(String.format("Patient ID: %s\n", patientID));
+            bld.append(String.format("Patient name: %s\n", patientName));
+            bld.append(String.format("Patient age: %s\n", patientAge));
+            bld.append(String.format("Patient weight: %s\n", patientWeight));
+            return bld.toString();
         }
     }
 
@@ -202,6 +307,25 @@ public class DCMData {
             }
         }
 
+        private void rainbowImage() {
+            float hsb[] = new float[3];
+
+            if (isRainbowed) {
+                int length = sizeX * sizeY;
+                int value;
+                hsb[1] = 1f;
+
+                for (int i = 0; i < length; i++) {
+                    value = workBuffer[i] & 0x000000ff;
+
+                    hsb[0] = 360 - ((float)value  / 255)  * 360;
+                    hsb[2] = (float)value  / 255;
+
+                    workBuffer[i] = Color.HSVToColor(hsb);
+                }
+            }
+        }
+
         private void contrastImage() {
             int value;
             int length = sizeX * sizeY;
@@ -236,26 +360,6 @@ public class DCMData {
                     }
 
                     workBuffer[i] = Color.rgb(value, value, value);
-                }
-            }
-        }
-
-        private void rainbowImage() {
-            boolean isRainbow = true;
-            float hsb[] = new float[3];
-
-            if (isRainbow) {
-                int length = sizeX * sizeY;
-                int value;
-                hsb[1] = 1f;
-
-                for (int i = 0; i < length; i++) {
-                    value = workBuffer[i] & 0x000000ff;
-
-                    hsb[0] = 360 - ((float)value  / 255)  * 360;
-                    hsb[2] = (float)value  / 255;
-
-                    workBuffer[i] = Color.HSVToColor(hsb);
                 }
             }
         }

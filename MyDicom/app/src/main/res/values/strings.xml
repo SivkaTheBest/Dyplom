@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="app_name">MyDicom</string>
-    <string name="action_settings">Settings</string>
-
+    <string name="app_name">Переглядач DICOM</string>
+    <string name="action_find">Пошук</string>
+    <string name="image_info">Інформація про зображення</string>
+    <string name="cn_plus">Збільшити контраст</string>
+    <string name="cn_minus">Зменшити контраст</string>
+    <string name="br_plus">Збільшити яскравість</string>
+    <string name="br_minus">Зменшити яскравість</string>
+    <string name="inverse">Негатив</string>
+    <string name="rainbow">Псевдоколір</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.mykola.mydicom;
 
 import android.app.Activity;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -8,9 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.imebra.dicom.DicomView;
+
+import java.util.HashMap;
 
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -19,7 +23,10 @@ public class MyActivity extends Activity {
 
     private static final String FTYPE = ".dcm";
     ImageView img;
+    TextView imgInfo;
+    TextView dcmInfo;
     PhotoViewAttacher mAttacher;
+
 
     private String mChosenFile;
     private DicomView dcm;
@@ -37,9 +44,13 @@ public class MyActivity extends Activity {
         Button cnMinus = (Button) findViewById(R.id.cnMinus);
 
         Button inverse = (Button) findViewById(R.id.inverse);
+        Button rainbow = (Button) findViewById(R.id.rainbow);
+
         System.loadLibrary("imebra_lib");
 
         img = (ImageView) findViewById(R.id.image);
+        imgInfo = (TextView) findViewById(R.id.info);
+        dcmInfo = (TextView) findViewById(R.id.metaInfo);
 
         cnPlus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,13 +92,46 @@ public class MyActivity extends Activity {
             }
         });
 
+        rainbow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dcmData.rainbow();
+                redrawImage();
+            }
+        });
+
         mAttacher = new PhotoViewAttacher(img);
+
+        mAttacher.setOnMatrixChangeListener(new PhotoViewAttacher.OnMatrixChangedListener() {
+            @Override
+            public void onMatrixChanged(RectF rectF) {
+                printInfo();
+            }
+        });
     }
 
     private void redrawImage() {
-        if(dcmData.isLoaded()) {
+        if (dcmData.isLoaded()) {
             img.setImageBitmap(dcmData.getFrame(0));
+            printInfo();
         }
+    }
+
+    private void printInfo() {
+        String info = String.format(
+                "Схема   : %s\n" +
+                "Контраст: %.2f\n" +
+                "Яскрав. : %d\n" +
+                "Масштаб : %.2f%%",
+                dcmData.getColorSchema(),
+                dcmData.getContrast(),
+                dcmData.getBrightness(),
+                mAttacher.getScale() * 100);
+
+        imgInfo.setText(info);
+
+        String metaInfo = dcmData.getMetaInfo();
+        dcmInfo.setText(metaInfo);
     }
 
     // Called when the activity starts
@@ -98,8 +142,7 @@ public class MyActivity extends Activity {
 
     private void loadDCM(String fileName) {
         dcmData.loadDCM(fileName);
-        ImageView img = (ImageView) findViewById(R.id.image);
-        img.setImageBitmap(dcmData.getFrame(0));
+        redrawImage();
         mAttacher.update();
     }
 
