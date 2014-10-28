@@ -27,7 +27,6 @@ public class MyActivity extends Activity {
     TextView dcmInfo;
     PhotoViewAttacher mAttacher;
 
-
     private String mChosenFile;
     private DicomView dcm;
     private DCMData dcmData = new DCMData();
@@ -43,6 +42,7 @@ public class MyActivity extends Activity {
         Button cnPlus = (Button) findViewById(R.id.cnPlus);
         Button cnMinus = (Button) findViewById(R.id.cnMinus);
 
+        Button normal = (Button) findViewById(R.id.normal);
         Button inverse = (Button) findViewById(R.id.inverse);
         Button rainbow = (Button) findViewById(R.id.rainbow);
 
@@ -51,6 +51,24 @@ public class MyActivity extends Activity {
         img = (ImageView) findViewById(R.id.image);
         imgInfo = (TextView) findViewById(R.id.info);
         dcmInfo = (TextView) findViewById(R.id.metaInfo);
+
+        View.OnClickListener infoPanelListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                TextView textPanel = (TextView)v;
+                if(textPanel.getCurrentTextColor() == 0xff000000) {
+                    textPanel.setTextColor(0x55000000);
+                    textPanel.setBackgroundColor(0x00ffffff);
+                } else {
+                    textPanel.setTextColor(0xff000000);
+                    textPanel.setBackgroundColor(0x66ffffff);
+                }
+            }
+        };
+
+        dcmInfo.setOnClickListener(infoPanelListener);
+        imgInfo.setOnClickListener(infoPanelListener);
 
         cnPlus.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +118,14 @@ public class MyActivity extends Activity {
             }
         });
 
+        normal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dcmData.normal();
+                redrawImage();
+            }
+        });
+
         mAttacher = new PhotoViewAttacher(img);
 
         mAttacher.setOnMatrixChangeListener(new PhotoViewAttacher.OnMatrixChangedListener() {
@@ -132,12 +158,6 @@ public class MyActivity extends Activity {
 
         String metaInfo = dcmData.getMetaInfo();
         dcmInfo.setText(metaInfo);
-    }
-
-    // Called when the activity starts
-    @Override
-    public void onStart() {
-        super.onStart();
     }
 
     private void loadDCM(String fileName) {

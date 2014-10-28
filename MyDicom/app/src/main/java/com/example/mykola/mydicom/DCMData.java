@@ -22,8 +22,7 @@ public class DCMData {
     List<ImageData> frames = new LinkedList<ImageData>();
     private int brightness;
     private double contrast;
-    private boolean isInverted;
-    private boolean isRainbowed;
+    private ColorSchema schema;
     private boolean isLoaded;
     private String fileName;
     private MetaData metaData;
@@ -43,8 +42,7 @@ public class DCMData {
     public void setDefault() {
         brightness = 0;
         contrast = 1;
-        isInverted = false;
-        isRainbowed = false;
+        schema = ColorSchema.NORMAL;
     }
 
     public void loadDCM(String fileName) {
@@ -157,44 +155,39 @@ public class DCMData {
     }
 
     public boolean isInverted() {
-        return isInverted;
+        return schema == ColorSchema.INVERSE;
     }
 
     public void inverse() {
-        isInverted = !isInverted;
+        schema = ColorSchema.INVERSE;
     }
 
     public double getContrast() {
         return contrast;
     }
 
-
     public void rainbow() {
-        isRainbowed = !isRainbowed;
+        schema = ColorSchema.RAINBOW;
     }
 
     public boolean isRainbowed() {
-        return isRainbowed;
+        return schema == ColorSchema.RAINBOW;
     }
 
     public String getColorSchema() {
-        if(isRainbowed() && isInverted()) {
-            return "негатив + псевдо";
-        }
-
-        if(isRainbowed() ) {
-            return "псевдо";
-        }
-
-        if(isInverted()) {
-            return "негатив";
-        }
-
-        return "норма";
+        return schema.toString();
     }
 
     public String getMetaInfo() {
         return metaData.toString();
+    }
+
+    public void normal() {
+        schema = ColorSchema.NORMAL;
+    }
+
+    public boolean isNormal() {
+        return schema == ColorSchema.NORMAL;
     }
 
     private class MetaData {
@@ -257,15 +250,15 @@ public class DCMData {
         @Override
         public String toString() {
             StringBuilder bld = new StringBuilder();
-            bld.append(String.format("Patient ID: %s\n", patientID));
-            bld.append(String.format("Patient name: %s\n", patientName));
-            bld.append(String.format("Patient age: %s\n", patientAge));
-            bld.append(String.format("Patient weight: %s\n", patientWeight));
+            bld.append(String.format("ID    : %s\n", patientID));
+            bld.append(String.format("ім'я  : %s\n", patientName));
+            bld.append(String.format("модель: %s\n", manufacturer));
+            bld.append(String.format("        %s", manufacturerModel));
             return bld.toString();
         }
     }
 
-    private class ImageData {
+    public class ImageData {
         private int[] buffer;
         private int[] workBuffer;
         private int sizeX;
@@ -281,9 +274,9 @@ public class DCMData {
 
         public Bitmap getBitmap() {
             copyBuffer();
-            invertImage();
             contrastImage();
             brightImage();
+            invertImage();
             rainbowImage();
 
             return Bitmap.createBitmap(workBuffer, sizeX, sizeY, Bitmap.Config.RGB_565);
@@ -310,7 +303,7 @@ public class DCMData {
         private void rainbowImage() {
             float hsb[] = new float[3];
 
-            if (isRainbowed) {
+            if (isRainbowed()) {
                 int length = sizeX * sizeY;
                 int value;
                 hsb[1] = 1f;
