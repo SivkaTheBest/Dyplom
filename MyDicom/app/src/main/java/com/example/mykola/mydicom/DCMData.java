@@ -311,10 +311,10 @@ public class DCMData {
                 for (int i = 0; i < length; i++) {
                     value = workBuffer[i] & 0x000000ff;
 
-                    hsb[0] = 360 - ((float)value  / 255)  * 360;
-                    hsb[2] = (float)value  / 255;
+                    hsb[0] = (255f - (float) value) / 255;
+                    hsb[2] = (float) value / 255;
 
-                    workBuffer[i] = Color.HSVToColor(hsb);
+                    workBuffer[i] = hsbToColor(hsb[0], hsb[2]);
                 }
             }
         }
@@ -355,6 +355,51 @@ public class DCMData {
                     workBuffer[i] = Color.rgb(value, value, value);
                 }
             }
+        }
+
+        public int hsbToColor(float hue, float brightness) {
+            int r = 0, g = 0, b = 0;
+
+            float h = (hue - (float) Math.floor(hue)) * 6.0f;
+            float f = h - (float) java.lang.Math.floor(h);
+
+            float q = brightness * (1.0f - f);
+            float t = brightness * f;
+
+            switch ((int) h) {
+                case 0:
+                    r = (int) (brightness * 255.0f + 0.5f);
+                    g = (int) (t * 255.0f + 0.5f);
+                    b = 0;
+                    break;
+                case 1:
+                    r = (int) (q * 255.0f + 0.5f);
+                    g = (int) (brightness * 255.0f + 0.5f);
+                    b = 0;
+                    break;
+                case 2:
+                    r = 0;
+                    g = (int) (brightness * 255.0f + 0.5f);
+                    b = (int) (t * 255.0f + 0.5f);
+                    break;
+                case 3:
+                    r = 0;
+                    g = (int) (q * 255.0f + 0.5f);
+                    b = (int) (brightness * 255.0f + 0.5f);
+                    break;
+                case 4:
+                    r = (int) (t * 255.0f + 0.5f);
+                    g = 0;
+                    b = (int) (brightness * 255.0f + 0.5f);
+                    break;
+                case 5:
+                    r = (int) (brightness * 255.0f + 0.5f);
+                    g = 0;
+                    b = (int) (q * 255.0f + 0.5f);
+                    break;
+            }
+
+            return 0xff000000 | (r << 16) | (g << 8) | (b << 0);
         }
     }
 }
