@@ -16,13 +16,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.imebra.dicom.DicomView;
-
-import java.util.HashMap;
-
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-// This activity is able to display a Dicom image
 public class MyActivity extends Activity {
 
     private static final String FTYPE = ".dcm";
@@ -32,7 +27,6 @@ public class MyActivity extends Activity {
     PhotoViewAttacher mAttacher;
 
     private String mChosenFile;
-    private DicomView dcm;
     private DCMData dcmData = new DCMData();
 
     @Override
@@ -102,8 +96,7 @@ public class MyActivity extends Activity {
         });
 
         LinearLayout.LayoutParams layoutParams =
-                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT);
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 500);
         layoutParams.setMargins(0, 0, 0, 0);
 
         VerticalSeekBar contrastBar = new VerticalSeekBar(this);
@@ -147,9 +140,10 @@ public class MyActivity extends Activity {
             }
         });
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ABOVE, R.id.normal);
-        params.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+        RelativeLayout.LayoutParams params =
+                new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 500);
+       // params.addRule(RelativeLayout.ABOVE, R.id.normal);
+        params.addRule(RelativeLayout.BELOW, R.id.icon_brightness);
         RelativeLayout leftPanel = (RelativeLayout)findViewById(R.id.leftPanel);
         leftPanel.addView(brightnessBar, params);
     }

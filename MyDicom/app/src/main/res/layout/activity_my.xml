@@ -18,25 +18,31 @@
         android:background="#11ffffff"
         android:orientation="vertical">
 
+        <ImageView
+            android:id="@+id/icon_brightness"
+            android:layout_width="100px"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_br" />
+
         <Button
             android:id="@+id/rainbow"
-            android:layout_alignParentBottom="true"
             android:layout_width="100px"
             android:layout_height="100px"
+            android:layout_alignParentBottom="true"
             android:text="R" />
 
         <Button
             android:id="@+id/inverse"
-            android:layout_above="@+id/rainbow"
             android:layout_width="100px"
             android:layout_height="100px"
+            android:layout_above="@+id/rainbow"
             android:text="I" />
 
         <Button
             android:id="@+id/normal"
-            android:layout_above="@+id/inverse"
             android:layout_width="100px"
             android:layout_height="100px"
+            android:layout_above="@+id/inverse"
             android:text="N" />
     </RelativeLayout>
 
@@ -44,36 +50,42 @@
         android:id="@+id/metaInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/leftPanel"
+        android:background="#55ffffff"
+        android:fontFamily="Courier New"
         android:gravity="bottom"
         android:minWidth="300px"
-        android:layout_toRightOf="@+id/leftPanel"
-        android:layout_alignParentTop="true"
-        android:textColor="#ff000000"
-        android:fontFamily="Courier New"
-        android:background="#55ffffff"
-        android:text="@string/image_info"/>
+        android:text="@string/image_info"
+        android:textColor="#ff000000" />
 
     <TextView
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/leftPanel"
+        android:background="#55ffffff"
+        android:fontFamily="Courier New"
         android:gravity="bottom"
         android:minWidth="300px"
-        android:layout_toRightOf="@+id/leftPanel"
-        android:layout_alignParentBottom="true"
-        android:textColor="#ff000000"
-        android:fontFamily="Courier New"
-        android:background="#55ffffff"
-        android:text="@string/image_info"/>
+        android:text="@string/image_info"
+        android:textColor="#ff000000" />
 
     <LinearLayout
         android:id="@+id/rightPanel"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="right"
         android:layout_alignParentRight="true"
+        android:layout_gravity="right"
         android:background="#11ffffff"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_cn"/>
+
     </LinearLayout>
 
 </RelativeLayout>

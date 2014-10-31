@@ -70,6 +70,9 @@ public class DCMData {
         String patientID = dataSet.getString(0x0010, 0, 0x0020, 0);
         String patientAge = dataSet.getString(0x0010, 0, 0x1010, 0);
         String patientWeight = dataSet.getString(0x0010, 0, 0x1030, 0);
+        String procedure = dataSet.getString(0x0032, 0, 0x1060, 0);
+        String date = dataSet.getString(0x0008, 0, 0x0020, 0);
+        String time = dataSet.getString(0x0008, 0, 0x0030, 0);
 
         metaData.setManufacturer(manufacturer);
         metaData.setManufacturerModel(manufacturerModel);
@@ -77,6 +80,9 @@ public class DCMData {
         metaData.setPatientID(patientID);
         metaData.setPatientAge(patientAge);
         metaData.setPatientWeight(patientWeight);
+        metaData.setProcedure(procedure);
+        if(time != null && !time.equals(""))
+            metaData.setDate(date + " " + time.substring(0, 8));
 
         try {
             for (int i = 0; ; i++) {
@@ -198,73 +204,7 @@ public class DCMData {
         return schema == ColorSchema.NORMAL;
     }
 
-    private class MetaData {
-        private String manufacturer;
-        private String manufacturerModel;
 
-        private String patientName;
-        private String patientID;
-        private String patientAge;
-        private String patientWeight;
-
-        public String getManufacturer() {
-            return manufacturer;
-        }
-
-        public void setManufacturer(String manufacturer) {
-            this.manufacturer = manufacturer;
-        }
-
-        public String getManufacturerModel() {
-            return manufacturerModel;
-        }
-
-        public void setManufacturerModel(String manufacturerModel) {
-            this.manufacturerModel = manufacturerModel;
-        }
-
-        public String getPatientName() {
-            return patientName;
-        }
-
-        public void setPatientName(String patientName) {
-            this.patientName = patientName;
-        }
-
-        public String getPatientID() {
-            return patientID;
-        }
-
-        public void setPatientID(String patientID) {
-            this.patientID = patientID;
-        }
-
-        public String getPatientAge() {
-            return patientAge;
-        }
-
-        public void setPatientAge(String patientAge) {
-            this.patientAge = patientAge;
-        }
-
-        public String getPatientWeight() {
-            return patientWeight;
-        }
-
-        public void setPatientWeight(String patientWeight) {
-            this.patientWeight = patientWeight;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder bld = new StringBuilder();
-            bld.append(String.format("ID    : %s\n", patientID));
-            bld.append(String.format("ім'я  : %s\n", patientName));
-            bld.append(String.format("модель: %s\n", manufacturer));
-            bld.append(String.format("        %s", manufacturerModel));
-            return bld.toString();
-        }
-    }
 
     public class ImageData {
         private int[] buffer;
@@ -368,42 +308,42 @@ public class DCMData {
         public int hsbToColor(float hue, float brightness) {
             int r = 0, g = 0, b = 0;
 
-            float h = (hue - (float) Math.floor(hue)) * 6.0f;
-            float f = h - (float) java.lang.Math.floor(h);
+            double h = (hue -  StrictMath.floor(hue)) * 6.0f;
+            double f = h -  StrictMath.floor(h);
 
-            float q = brightness * (1.0f - f);
-            float t = brightness * f;
+            double q = brightness * (1.0f - f) * 255.0f + 0.5f;
+            double t = brightness * f * 255.0f + 0.5f;
 
             switch ((int) h) {
                 case 0:
                     r = (int) (brightness * 255.0f + 0.5f);
-                    g = (int) (t * 255.0f + 0.5f);
+                    g = (int) t;
                     b = 0;
                     break;
                 case 1:
-                    r = (int) (q * 255.0f + 0.5f);
+                    r = (int) q;
                     g = (int) (brightness * 255.0f + 0.5f);
                     b = 0;
                     break;
                 case 2:
                     r = 0;
                     g = (int) (brightness * 255.0f + 0.5f);
-                    b = (int) (t * 255.0f + 0.5f);
+                    b = (int) t;
                     break;
                 case 3:
                     r = 0;
-                    g = (int) (q * 255.0f + 0.5f);
+                    g = (int) q;
                     b = (int) (brightness * 255.0f + 0.5f);
                     break;
                 case 4:
-                    r = (int) (t * 255.0f + 0.5f);
+                    r = (int) t;
                     g = 0;
                     b = (int) (brightness * 255.0f + 0.5f);
                     break;
                 case 5:
                     r = (int) (brightness * 255.0f + 0.5f);
                     g = 0;
-                    b = (int) (q * 255.0f + 0.5f);
+                    b = (int) q;
                     break;
             }
 
