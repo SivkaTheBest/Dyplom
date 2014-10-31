@@ -49,11 +49,11 @@ public class MyActivity extends Activity {
             public void onClick(View v) {
 
                 TextView textPanel = (TextView)v;
-                if(textPanel.getCurrentTextColor() == 0xff000000) {
+                if(textPanel.getCurrentTextColor() == 0xff00ff00) {
                     textPanel.setTextColor(0x55000000);
                     textPanel.setBackgroundColor(0x00ffffff);
                 } else {
-                    textPanel.setTextColor(0xff000000);
+                    textPanel.setTextColor(0xff00ff00);
                     textPanel.setBackgroundColor(0x55ffffff);
                 }
             }

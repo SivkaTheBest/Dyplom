@@ -57,7 +57,7 @@
         android:gravity="bottom"
         android:minWidth="300px"
         android:text="@string/image_info"
-        android:textColor="#ff000000" />
+        android:textColor="#ff00ff00" />
 
     <TextView
         android:id="@+id/info"
@@ -70,7 +70,7 @@
         android:gravity="bottom"
         android:minWidth="300px"
         android:text="@string/image_info"
-        android:textColor="#ff000000" />
+        android:textColor="#ff00ff00" />
 
     <LinearLayout
         android:id="@+id/rightPanel"
