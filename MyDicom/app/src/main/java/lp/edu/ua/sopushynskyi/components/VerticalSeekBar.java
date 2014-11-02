@@ -1,4 +1,4 @@
-package com.example.mykola.mydicom;
+package lp.edu.ua.sopushynskyi.components;
 
 /**
  * Created by Mykola on 28.10.2014.

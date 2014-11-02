@@ -1,4 +1,4 @@
-package com.example.mykola.mydicom;
+package lp.edu.ua.sopushynskyi.activities;
 
 import android.app.Activity;
 import android.graphics.RectF;
@@ -16,6 +16,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mykola.mydicom.R;
+import lp.edu.ua.sopushynskyi.components.VerticalSeekBar;
+
+import lp.edu.ua.sopushynskyi.dialogs.OpenFileDialog;
+import lp.edu.ua.sopushynskyi.dicom.DCMData;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class MyActivity extends Activity {
@@ -38,11 +43,30 @@ public class MyActivity extends Activity {
         Button inverse = (Button) findViewById(R.id.inverse);
         Button rainbow = (Button) findViewById(R.id.rainbow);
 
-        System.loadLibrary("imebra_lib");
+        Button next = (Button) findViewById(R.id.next);
+        Button prev = (Button) findViewById(R.id.previous);
+
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dcmData.nextFrame())
+                    redrawImage();
+            }
+        });
+
+        prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dcmData.prevFrame())
+                    redrawImage();
+            }
+        });
 
         img = (ImageView) findViewById(R.id.image);
         imgInfo = (TextView) findViewById(R.id.info);
         dcmInfo = (TextView) findViewById(R.id.metaInfo);
+
+        System.loadLibrary("imebra_lib");
 
         View.OnClickListener infoPanelListener = new View.OnClickListener() {
             @Override
@@ -118,8 +142,11 @@ public class MyActivity extends Activity {
             }
         });
 
-        LinearLayout rightPanel = (LinearLayout)findViewById(R.id.rightPanel);
-        rightPanel.addView(contrastBar);
+        RelativeLayout rightPanel = (RelativeLayout)findViewById(R.id.rightPanel);
+        RelativeLayout.LayoutParams contrastParams =
+                new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 500);
+        contrastParams.addRule(RelativeLayout.BELOW, R.id.icon_contrast);
+        rightPanel.addView(contrastBar, contrastParams);
 
         VerticalSeekBar brightnessBar = new VerticalSeekBar(this);
         brightnessBar.setLayoutParams(layoutParams);
@@ -140,17 +167,16 @@ public class MyActivity extends Activity {
             }
         });
 
-        RelativeLayout.LayoutParams params =
+        RelativeLayout.LayoutParams brightnessParams =
                 new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 500);
-       // params.addRule(RelativeLayout.ABOVE, R.id.normal);
-        params.addRule(RelativeLayout.BELOW, R.id.icon_brightness);
+        brightnessParams.addRule(RelativeLayout.BELOW, R.id.icon_brightness);
         RelativeLayout leftPanel = (RelativeLayout)findViewById(R.id.leftPanel);
-        leftPanel.addView(brightnessBar, params);
+        leftPanel.addView(brightnessBar, brightnessParams);
     }
 
     private void redrawImage() {
         if (dcmData.isLoaded()) {
-            img.setImageBitmap(dcmData.getFrame(0));
+            img.setImageBitmap(dcmData.getFrame());
             printInfo();
         }
     }
@@ -160,11 +186,14 @@ public class MyActivity extends Activity {
                 "Схема   : %s\n" +
                 "Контраст: %.2f\n" +
                 "Яскрав. : %d\n" +
-                "Масштаб : %.2f%%",
+                "Масштаб : %.2f%%\n" +
+                "Кадр    : %d/%d",
                 dcmData.getColorSchema(),
                 dcmData.getContrast(),
                 dcmData.getBrightness(),
-                mAttacher.getScale() * 100);
+                mAttacher.getScale() * 100,
+                dcmData.getCurrentFrame() + 1,
+                dcmData.getFramesNumber());
 
         imgInfo.setText(info);
 

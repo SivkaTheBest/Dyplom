@@ -1,4 +1,4 @@
-package com.example.mykola.mydicom;
+package lp.edu.ua.sopushynskyi.dicom;
 
 public enum ColorSchema {
     NORMAL("норма"),

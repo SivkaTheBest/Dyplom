@@ -1,4 +1,4 @@
-package com.example.mykola.mydicom;
+package lp.edu.ua.sopushynskyi.dialogs;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -194,9 +194,6 @@ public class OpenFileDialog extends AlertDialog.Builder {
 
         return fileList;
     }
-
- /*   private Drawable folderIcon = Drawable.;
-    private Drawable fileIcon;*/
 
     private ListView createListView(Context context) {
         ListView listView = new ListView(context);

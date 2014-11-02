@@ -9,4 +9,6 @@
     <string name="br_minus">Зменшити яскравість</string>
     <string name="inverse">Негатив</string>
     <string name="rainbow">Псевдоколір</string>
+    <string name="next">&lt;</string>
+    <string name="prev">&gt;</string>
 </resources>
