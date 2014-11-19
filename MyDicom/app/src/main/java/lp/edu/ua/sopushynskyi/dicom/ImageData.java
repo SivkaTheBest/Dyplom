@@ -9,6 +9,13 @@ public class ImageData {
     private int sizeX;
     private int sizeY;
 
+    public int getSizeX() {
+        return sizeX;
+    }
+
+    public int getSizeY() {
+        return sizeY;
+    }
 
     public ImageData(int[] buffer, int sizeX, int sizeY) {
         this.buffer = buffer;

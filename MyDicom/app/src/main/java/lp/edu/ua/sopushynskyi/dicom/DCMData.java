@@ -230,4 +230,9 @@ public class DCMData {
         }
         return true;
     }
+
+    public String getFrameResolution() {
+        ImageData img = frames.get(getCurrentFrame());
+        return img.getSizeX() + "x" + img.getSizeY();
+    }
 }

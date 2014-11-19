@@ -1,7 +1,11 @@
 package lp.edu.ua.sopushynskyi.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.RectF;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +25,7 @@ import lp.edu.ua.sopushynskyi.components.VerticalSeekBar;
 
 import lp.edu.ua.sopushynskyi.dialogs.OpenFileDialog;
 import lp.edu.ua.sopushynskyi.dicom.DCMData;
+import lp.edu.ua.sopushynskyi.dicom.NetworkService;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class MyActivity extends Activity {
@@ -30,6 +35,8 @@ public class MyActivity extends Activity {
     TextView imgInfo;
     TextView dcmInfo;
     PhotoViewAttacher mAttacher;
+    VerticalSeekBar contrastBar;
+    VerticalSeekBar brightnessBar;
 
     private String mChosenFile;
     private DCMData dcmData = new DCMData();
@@ -90,7 +97,10 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(View v) {
                 dcmData.inverse();
+                //long start = System.currentTimeMillis();
                 redrawImage();
+               // long end = System.currentTimeMillis();
+                //Toast.makeText(getApplicationContext(), String.format("inverse %d ms",(end - start)), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -98,7 +108,11 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(View v) {
                 dcmData.rainbow();
+
+                //long start = System.currentTimeMillis();
                 redrawImage();
+                //long end = System.currentTimeMillis();
+               // Toast.makeText(getApplicationContext(), String.format("rainbow %d ms",(end - start)), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -106,7 +120,11 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(View v) {
                 dcmData.normal();
+
+                //long start = System.currentTimeMillis();
                 redrawImage();
+                //long end = System.currentTimeMillis();
+                //Toast.makeText(getApplicationContext(), String.format("normal %d ms",(end - start)), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -123,7 +141,7 @@ public class MyActivity extends Activity {
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 500);
         layoutParams.setMargins(0, 0, 0, 0);
 
-        VerticalSeekBar contrastBar = new VerticalSeekBar(this);
+        contrastBar = new VerticalSeekBar(this);
         contrastBar.setLayoutParams(layoutParams);
         contrastBar.setMax(100);
         contrastBar.setProgress(25);
@@ -132,7 +150,11 @@ public class MyActivity extends Activity {
         contrastBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 dcmData.setContrast(progress / 100f * 2 + 0.5f);
+
+                //long start = System.currentTimeMillis();
                 redrawImage();
+                //long end = System.currentTimeMillis();
+                //Toast.makeText(getApplicationContext(), String.format("contrast %d ms",(end - start)), Toast.LENGTH_SHORT).show();
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -148,7 +170,7 @@ public class MyActivity extends Activity {
         contrastParams.addRule(RelativeLayout.BELOW, R.id.icon_contrast);
         rightPanel.addView(contrastBar, contrastParams);
 
-        VerticalSeekBar brightnessBar = new VerticalSeekBar(this);
+        brightnessBar = new VerticalSeekBar(this);
         brightnessBar.setLayoutParams(layoutParams);
         brightnessBar.setMax(100);
         brightnessBar.setProgress(50);
@@ -157,7 +179,11 @@ public class MyActivity extends Activity {
         brightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 dcmData.setBrightness((int)(progress / 100f * 500) - 250);
+
+                //long start = System.currentTimeMillis();
                 redrawImage();
+                //long end = System.currentTimeMillis();
+                //Toast.makeText(getApplicationContext(), String.format("brightness %d ms",(end - start)), Toast.LENGTH_SHORT).show();
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -187,13 +213,15 @@ public class MyActivity extends Activity {
                 "Контраст: %.2f\n" +
                 "Яскрав. : %d\n" +
                 "Масштаб : %.2f%%\n" +
-                "Кадр    : %d/%d",
+                "Кадр    : %d/%d\n" +
+                "Розмір  : %s",
                 dcmData.getColorSchema(),
                 dcmData.getContrast(),
                 dcmData.getBrightness(),
                 mAttacher.getScale() * 100,
                 dcmData.getCurrentFrame() + 1,
-                dcmData.getFramesNumber());
+                dcmData.getFramesNumber(),
+                dcmData.getFrameResolution());
 
         imgInfo.setText(info);
 
@@ -209,7 +237,6 @@ public class MyActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.my, menu);
         return super.onCreateOptionsMenu(menu);
@@ -217,7 +244,6 @@ public class MyActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_search:
                 OpenFileDialog fileDialog = new OpenFileDialog(this).setFilter(FTYPE).setOpenDialogListener(new OpenFileDialog.OpenDialogListener() {
@@ -231,8 +257,34 @@ public class MyActivity extends Activity {
                 });
                 fileDialog.show();
                 return true;
+            case R.id.action_network:
+
+                String stringUrl = "http://192.168.0.102:9000/patients";
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnected()) {
+                    new GetPatientListTask().execute(stringUrl);
+                } else {
+                    Toast.makeText(getApplicationContext(),"Немає підключення до мережі" , Toast.LENGTH_SHORT).show();
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private class GetPatientListTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+            NetworkService network = new NetworkService();
+            return network.makeServiceCall(urls[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

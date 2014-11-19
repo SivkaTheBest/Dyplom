@@ -1,8 +1,5 @@
 package lp.edu.ua.sopushynskyi.components;
 
-/**
- * Created by Mykola on 28.10.2014.
- */
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;

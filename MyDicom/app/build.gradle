@@ -21,7 +21,4 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/imebra_android.jar')
-    compile files('libs/library-1.2.1.jar')
-    compile files('libs/dcm4che-core-2.0.28.jar')
 }
