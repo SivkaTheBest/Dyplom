@@ -3,8 +3,12 @@
     tools:context=".MyActivity" >
     <item android:id="@+id/action_search"
         android:title="@string/action_find"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/ic_storage"
         android:orderInCategory="100"
         android:showAsAction="ifRoom" />
-
+    <item android:id="@+id/action_network"
+        android:title="@string/action_find"
+        android:icon="@drawable/ic_patients"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom" />
 </menu>
