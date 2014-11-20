@@ -140,7 +140,6 @@ public class PatientsDialog extends AlertDialog.Builder {
                 e.printStackTrace();
             }
         }
-
     }
 
     private class PatientAdapter extends ArrayAdapter<Patient> {
@@ -166,7 +165,7 @@ public class PatientsDialog extends AlertDialog.Builder {
             final Patient patient = patients.get(position);
 
             patientNameView.setText(patient.getName());
-            patientIdView.setText(patient.getId());
+            patientIdView.setText("ID: " + patient.getId());
 
             return patientView;
         }

@@ -11,15 +11,19 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.mykola.mydicom.R;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -232,20 +236,33 @@ public class OpenFileDialog extends AlertDialog.Builder {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            TextView view = (TextView) super.getView(position, convertView, parent);
+            LayoutInflater inflater = (LayoutInflater) getContext()
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            View fileElementView = inflater.inflate(R.layout.patient_data_element, parent, false);
+            TextView fileNameView = (TextView) fileElementView.findViewById(R.id.fileName);
+            ImageView icon = (ImageView) fileElementView.findViewById(R.id.icon);
+
+            //TextView view = (TextView) super.getView(position, convertView, parent);
             File file = getItem(position);
             if (file.getAbsolutePath().equals(new File(currentPath).getParentFile().getAbsolutePath())) {
-                view.setText("..");
+                fileNameView.setText("..");
+                icon.setImageResource(R.drawable.ic_up);
             } else {
-                view.setText(file.getName());
+                fileNameView.setText(file.getName());
+                if(file.isDirectory()) {
+                    icon.setImageResource(R.drawable.ic_folder);
+                } else {
+                    icon.setImageResource(R.drawable.ic_image_dcm);
+                }
             }
 
             if (selectedIndex == position) {
-                view.setBackgroundColor(getContext().getResources().getColor(android.R.color.holo_blue_light));
+                fileElementView.setBackgroundColor(getContext().getResources().getColor(android.R.color.secondary_text_dark));
             } else {
-                view.setBackgroundColor(getContext().getResources().getColor(android.R.color.transparent));
+                fileElementView.setBackgroundColor(getContext().getResources().getColor(android.R.color.transparent));
             }
-            return view;
+            return fileElementView;
         }
     }
 
