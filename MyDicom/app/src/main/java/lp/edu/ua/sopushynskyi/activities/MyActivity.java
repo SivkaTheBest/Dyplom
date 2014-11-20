@@ -1,12 +1,18 @@
 package lp.edu.ua.sopushynskyi.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.RectF;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +30,7 @@ import com.example.mykola.mydicom.R;
 import lp.edu.ua.sopushynskyi.components.VerticalSeekBar;
 
 import lp.edu.ua.sopushynskyi.dialogs.OpenFileDialog;
+import lp.edu.ua.sopushynskyi.dialogs.PatientsDialog;
 import lp.edu.ua.sopushynskyi.dicom.DCMData;
 import lp.edu.ua.sopushynskyi.dicom.NetworkService;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -37,6 +44,7 @@ public class MyActivity extends Activity {
     PhotoViewAttacher mAttacher;
     VerticalSeekBar contrastBar;
     VerticalSeekBar brightnessBar;
+    Activity self = this;
 
     private String mChosenFile;
     private DCMData dcmData = new DCMData();
@@ -258,32 +266,14 @@ public class MyActivity extends Activity {
                 fileDialog.show();
                 return true;
             case R.id.action_network:
-
                 String stringUrl = "http://192.168.0.102:9000/patients";
-                ConnectivityManager connMgr = (ConnectivityManager)
-                        getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-                if (networkInfo != null && networkInfo.isConnected()) {
-                    new GetPatientListTask().execute(stringUrl);
-                } else {
-                    Toast.makeText(getApplicationContext(),"Немає підключення до мережі" , Toast.LENGTH_SHORT).show();
-                }
+                PatientsDialog patientsDialog = new PatientsDialog(this);
+                patientsDialog.setUrl(stringUrl);
+                patientsDialog.show();
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private class GetPatientListTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-            NetworkService network = new NetworkService();
-            return network.makeServiceCall(urls[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
         }
     }
 

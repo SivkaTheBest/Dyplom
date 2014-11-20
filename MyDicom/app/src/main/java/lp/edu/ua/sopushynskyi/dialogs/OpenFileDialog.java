@@ -33,15 +33,10 @@ import java.util.List;
 public class OpenFileDialog extends AlertDialog.Builder {
 
     private String currentPath = Environment.getExternalStorageDirectory().getPath();
-
     private List<File> files = new ArrayList<File>();
-
     private TextView title;
-
     private ListView listView;
-
     private FilenameFilter filenameFilter;
-
     private int selectedIndex = -1;
     private OpenDialogListener listener;
 
@@ -117,6 +112,7 @@ public class OpenFileDialog extends AlertDialog.Builder {
 
     private TextView createTitle(Context context) {
         TextView textView = createTextView(context, android.R.style.TextAppearance_DeviceDefault_DialogWindowTitle);
+        textView.setPadding(40, 40, 40, 40);
         return textView;
     }
 

@@ -9,6 +9,10 @@
     <string name="br_minus">Зменшити яскравість</string>
     <string name="inverse">Негатив</string>
     <string name="rainbow">Псевдоколір</string>
+    <string name="url">URL сервера</string>
+    <string name="patientName">Ім\'я пацієнта</string>
+    <string name="findPatient">Знайти</string>
     <string name="next">&lt;</string>
     <string name="prev">&gt;</string>
+    <string name="findPatientTitle">Пошук пацієнта</string>
 </resources>
