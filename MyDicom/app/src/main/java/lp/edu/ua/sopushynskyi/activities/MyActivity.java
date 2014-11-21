@@ -271,6 +271,7 @@ public class MyActivity extends Activity {
                 patientsDialog.setUrl(stringUrl);
                 patientsDialog.show();
 
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

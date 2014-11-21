@@ -133,8 +133,15 @@ public class DCMData {
         }
     }
 
+
+
     public Bitmap getFrame() {
-        return frames.get(currentFrame).getBitmap(isInverted(), isRainbowed(), getContrast(), getBrightness());
+        if(frames.size() != 0) {
+            return frames.get(currentFrame).getBitmap(isInverted(),
+                    isRainbowed(), getContrast(), getBrightness());
+        } else {
+            return null;
+        }
     }
 
     public int getBrightness() {
@@ -143,31 +150,6 @@ public class DCMData {
 
     public String getFileName() {
         return fileName;
-    }
-
-    public void addBrightness(int brightness) {
-        this.brightness += brightness;
-        if (this.brightness >= 260)
-            this.brightness = 260;
-
-    }
-
-    public void minusBrightness(int brightness) {
-        this.brightness -= brightness;
-        if (this.brightness <= -260)
-            this.brightness = -260;
-    }
-
-    public void addContrast(double contrast) {
-        this.contrast += contrast;
-        if (this.contrast > 2)
-            this.contrast = 2;
-    }
-
-    public void minusContrast(double contrast) {
-        this.contrast -= contrast;
-        if (this.contrast < 0)
-            this.contrast = 0;
     }
 
     public boolean isInverted() {
@@ -232,7 +214,11 @@ public class DCMData {
     }
 
     public String getFrameResolution() {
-        ImageData img = frames.get(getCurrentFrame());
-        return img.getSizeX() + "x" + img.getSizeY();
+        if(frames.size() != 0) {
+            ImageData img = frames.get(getCurrentFrame());
+            return img.getSizeX() + "x" + img.getSizeY();
+        } else {
+            return "недоступно";
+        }
     }
 }

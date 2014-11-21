@@ -46,6 +46,8 @@ public class OpenFileDialog extends AlertDialog.Builder {
 
     public OpenFileDialog(Context context) {
         super(context);
+        setCancelable(true);
+
         title = createTitle(context);
         changeTitle();
         LinearLayout linearLayout = createMainLayout(context);
@@ -56,9 +58,8 @@ public class OpenFileDialog extends AlertDialog.Builder {
         linearLayout.addView(listView);
         setCustomTitle(title)
                 .setView(linearLayout)
-                .setPositiveButton(android.R.string.ok, null)
-                .setNegativeButton(android.R.string.cancel, null)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (selectedIndex > -1 && listener != null) {
@@ -243,7 +244,6 @@ public class OpenFileDialog extends AlertDialog.Builder {
             TextView fileNameView = (TextView) fileElementView.findViewById(R.id.fileName);
             ImageView icon = (ImageView) fileElementView.findViewById(R.id.icon);
 
-            //TextView view = (TextView) super.getView(position, convertView, parent);
             File file = getItem(position);
             if (file.getAbsolutePath().equals(new File(currentPath).getParentFile().getAbsolutePath())) {
                 fileNameView.setText("..");

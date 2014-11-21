@@ -3,10 +3,6 @@
     <string name="app_name">Переглядач DICOM</string>
     <string name="action_find">Пошук</string>
     <string name="image_info">Інформація про зображення</string>
-    <string name="cn_plus">Збільшити контраст</string>
-    <string name="cn_minus">Зменшити контраст</string>
-    <string name="br_plus">Збільшити яскравість</string>
-    <string name="br_minus">Зменшити яскравість</string>
     <string name="inverse">Негатив</string>
     <string name="rainbow">Псевдоколір</string>
     <string name="url">URL сервера</string>
@@ -15,4 +11,6 @@
     <string name="next">&lt;</string>
     <string name="prev">&gt;</string>
     <string name="findPatientTitle">Пошук пацієнта</string>
+    <string name="cancel">Скасувати</string>
+    <string name="ok">OK</string>
 </resources>

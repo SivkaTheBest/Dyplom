@@ -2,20 +2,16 @@ package lp.edu.ua.sopushynskyi.dialogs;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,38 +32,24 @@ public class PatientsDialog extends AlertDialog.Builder {
 
     private ListView listView;
     private EditText patientEdit;
-    private Button findButton;
+
 
     private List<Patient> patientList = new LinkedList<Patient>();
 
     public PatientsDialog(final Context context) {
         super(context);
+        setCancelable(true);
 
-        LinearLayout linearLayout = createMainLayout(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.patients, null);
 
-        setView(linearLayout)
+        setView(view)
                 .setTitle(context.getString(R.string.findPatientTitle))
-                .setView(view);
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.findPatient, null);
 
         patientEdit = (EditText) view.findViewById(R.id.patientName);
-        findButton = (Button) view.findViewById(R.id.findPatient);
         listView = (ListView) view.findViewById(R.id.patientsList);
-
-        findButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ConnectivityManager connMgr = (ConnectivityManager)
-                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-                if (networkInfo != null && networkInfo.isConnected()) {
-                    new GetPatientListTask().execute(url);
-                } else {
-                    Toast.makeText(context, "Немає підключення до мережі", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -80,21 +62,29 @@ public class PatientsDialog extends AlertDialog.Builder {
         });
     }
 
-    private static int getLinearLayoutMinHeight(Context context) {
-        Point screeSize = new Point();
-        ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getSize(screeSize);
-        return screeSize.y;
+    @Override
+    public AlertDialog show() {
+        AlertDialog dialog = super.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnected()) {
+                    new GetPatientListTask().execute(url);
+                } else {
+                    Toast.makeText(getContext(), "Немає підключення до мережі", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        return dialog;
     }
+
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    private LinearLayout createMainLayout(Context context) {
-        LinearLayout linearLayout = new LinearLayout(context);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setMinimumHeight(getLinearLayoutMinHeight(context));
-        return linearLayout;
     }
 
     private void hideKeyBoard() {
