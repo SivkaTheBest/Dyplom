@@ -14,12 +14,29 @@
         android:src="@drawable/ic_folder" />
 
     <TextView
+        android:id="@+id/fileDate"
+        android:layout_width="fill_parent"
+        android:layout_height="26dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/icon"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:text="Дата модифікації"
+        android:textSize="12sp" />
+
+    <TextView
         android:id="@+id/fileName"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fileName"
+        android:paddingTop="8dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="true"
         android:layout_toRightOf="@id/icon"
-        android:text="File element"
-        android:gravity="center_vertical|left"
-        android:textSize="18sp" />
+        android:gravity="center_vertical"
+        android:text="Ім\'я файлу"
+        android:textSize="16sp" />
 
 </RelativeLayout>

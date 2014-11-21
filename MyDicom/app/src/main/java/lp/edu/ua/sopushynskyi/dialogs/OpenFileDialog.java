@@ -27,6 +27,7 @@ import com.example.mykola.mydicom.R;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,6 +44,7 @@ public class OpenFileDialog extends AlertDialog.Builder {
     private FilenameFilter filenameFilter;
     private int selectedIndex = -1;
     private OpenDialogListener listener;
+    public static SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
     public OpenFileDialog(Context context) {
         super(context);
@@ -242,17 +244,21 @@ public class OpenFileDialog extends AlertDialog.Builder {
 
             View fileElementView = inflater.inflate(R.layout.patient_data_element, parent, false);
             TextView fileNameView = (TextView) fileElementView.findViewById(R.id.fileName);
+            TextView fileDateView = (TextView) fileElementView.findViewById(R.id.fileDate);
             ImageView icon = (ImageView) fileElementView.findViewById(R.id.icon);
 
             File file = getItem(position);
             if (file.getAbsolutePath().equals(new File(currentPath).getParentFile().getAbsolutePath())) {
-                fileNameView.setText("..");
+                fileNameView.setText(R.string.up);
+                fileDateView.setText(R.string.up_text);
                 icon.setImageResource(R.drawable.ic_up);
             } else {
                 fileNameView.setText(file.getName());
                 if(file.isDirectory()) {
+                    fileDateView.setText(R.string.folder);
                     icon.setImageResource(R.drawable.ic_folder);
                 } else {
+                    fileDateView.setText(sdf.format(file.lastModified()));
                     icon.setImageResource(R.drawable.ic_image_dcm);
                 }
             }

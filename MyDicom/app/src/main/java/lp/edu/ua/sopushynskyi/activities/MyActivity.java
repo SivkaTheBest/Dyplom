@@ -266,7 +266,7 @@ public class MyActivity extends Activity {
                 fileDialog.show();
                 return true;
             case R.id.action_network:
-                String stringUrl = "http://192.168.0.102:9000/patients";
+                String stringUrl = "http://192.168.0.102:9000";
                 PatientsDialog patientsDialog = new PatientsDialog(this);
                 patientsDialog.setUrl(stringUrl);
                 patientsDialog.show();

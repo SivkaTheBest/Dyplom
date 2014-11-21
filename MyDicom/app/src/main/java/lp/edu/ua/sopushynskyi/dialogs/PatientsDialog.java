@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.mykola.mydicom.R;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +26,7 @@ import org.json.JSONObject;
 import java.util.LinkedList;
 import java.util.List;
 
+import lp.edu.ua.sopushynskyi.dialogs.utils.PatientElement;
 import lp.edu.ua.sopushynskyi.dicom.NetworkService;
 
 public class PatientsDialog extends AlertDialog.Builder {
@@ -32,9 +34,9 @@ public class PatientsDialog extends AlertDialog.Builder {
 
     private ListView listView;
     private EditText patientEdit;
+    private PatientDataDialog patientDataDialog;
 
-
-    private List<Patient> patientList = new LinkedList<Patient>();
+    private List<PatientElement> patientElementList = new LinkedList<PatientElement>();
 
     public PatientsDialog(final Context context) {
         super(context);
@@ -54,10 +56,11 @@ public class PatientsDialog extends AlertDialog.Builder {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final ArrayAdapter<Patient> adapter = (PatientAdapter) adapterView.getAdapter();
+                final ArrayAdapter<PatientElement> adapter = (PatientAdapter) adapterView.getAdapter();
 
-                Patient patient = adapter.getItem(i);
-                Toast.makeText(getContext(), "Клік по пацієнту " + patient.getName(), Toast.LENGTH_SHORT).show();
+                PatientElement patientElement = adapter.getItem(i);
+                patientDataDialog = new PatientDataDialog(context, patientElement, url);
+                patientDataDialog.show();
             }
         });
     }
@@ -101,7 +104,7 @@ public class PatientsDialog extends AlertDialog.Builder {
         @Override
         protected String doInBackground(String... urls) {
             NetworkService network = new NetworkService();
-            return network.makeServiceCall(urls[0]);
+            return network.makeServiceCall(urls[0] + "/patients");
         }
         @Override
         protected void onPostExecute(String result) {
@@ -109,37 +112,41 @@ public class PatientsDialog extends AlertDialog.Builder {
             String name;
 
             try {
-                patientList.clear();
-                JSONArray array = new JSONArray(result);
-                JSONObject element;
+                if(!StringUtils.isEmpty(result)) {
+                    patientElementList.clear();
+                    JSONArray array = new JSONArray(result);
+                    JSONObject element;
 
-                for (int i = 0; i < array.length(); i++) {
-                    element = (JSONObject) array.get(i);
-                    id = element.optString(ATTR_ID);
-                    name = element.optString(ATTR_NAME);
+                    for (int i = 0; i < array.length(); i++) {
+                        element = (JSONObject) array.get(i);
+                        id = element.optString(ATTR_ID);
+                        name = element.optString(ATTR_NAME);
 
-                    patientList.add(new Patient(id, name));
+                        patientElementList.add(new PatientElement(id, name));
+                    }
+
+                    final PatientAdapter adapter = new PatientAdapter(getContext(), patientElementList);
+                    listView.setAdapter(adapter);
+                    hideKeyBoard();
+
+                    Toast.makeText(getContext(), "Пацієнти знайдені", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Неможливо отримати список пацієнтів", Toast.LENGTH_SHORT).show();
                 }
-
-                final PatientAdapter adapter = new PatientAdapter(getContext(), patientList);
-                listView.setAdapter(adapter);
-                hideKeyBoard();
-
-                Toast.makeText(getContext(), "Пацієнти знайдені", Toast.LENGTH_SHORT).show();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private class PatientAdapter extends ArrayAdapter<Patient> {
-        List<Patient> patients;
+    private class PatientAdapter extends ArrayAdapter<PatientElement> {
+        List<PatientElement> patientElements;
         Context context;
 
-        public PatientAdapter(Context context, List<Patient> patients) {
-            super(context, R.layout.patient_element, patients);
+        public PatientAdapter(Context context, List<PatientElement> patientElements) {
+            super(context, R.layout.patient_element, patientElements);
 
-            this.patients = patients;
+            this.patientElements = patientElements;
             this.context = context;
         }
 
@@ -152,10 +159,10 @@ public class PatientsDialog extends AlertDialog.Builder {
             TextView patientNameView = (TextView) patientView.findViewById(R.id.patientName);
             TextView patientIdView = (TextView) patientView.findViewById(R.id.patientId);
 
-            final Patient patient = patients.get(position);
+            final PatientElement patientElement = patientElements.get(position);
 
-            patientNameView.setText(patient.getName());
-            patientIdView.setText("ID: " + patient.getId());
+            patientNameView.setText(patientElement.getName());
+            patientIdView.setText("ID: " + patientElement.getId());
 
             return patientView;
         }

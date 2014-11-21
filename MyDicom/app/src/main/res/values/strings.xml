@@ -13,4 +13,8 @@
     <string name="findPatientTitle">Пошук пацієнта</string>
     <string name="cancel">Скасувати</string>
     <string name="ok">OK</string>
+    <string name="refresh">Оновити</string>
+    <string name="folder">папка</string>
+    <string name="up">..</string>
+    <string name="up_text">назад</string>
 </resources>

@@ -6,6 +6,7 @@
 GET     /                                       Application.index
 GET     /patients                               Application.findPatients
 GET     /patient                                Application.findPatientData
+GET     /image                                  Application.getPatientImage
 
 # Ignore favicon requests
 GET     /favicon.ico                            404

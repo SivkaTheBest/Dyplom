@@ -1,4 +1,4 @@
-package controllers;
+package lp.edu.ua.sopushynskyi.dialogs.utils;
 
 public enum TypeOfElement {
     DCM("DCM"),
