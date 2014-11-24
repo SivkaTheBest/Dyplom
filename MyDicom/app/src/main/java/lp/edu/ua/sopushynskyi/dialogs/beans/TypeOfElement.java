@@ -1,4 +1,4 @@
-package lp.edu.ua.sopushynskyi.dialogs.utils;
+package lp.edu.ua.sopushynskyi.dialogs.beans;
 
 public enum TypeOfElement {
     DCM("DCM"),
