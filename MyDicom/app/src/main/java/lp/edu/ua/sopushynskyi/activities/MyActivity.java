@@ -31,6 +31,7 @@ import lp.edu.ua.sopushynskyi.components.VerticalSeekBar;
 
 import lp.edu.ua.sopushynskyi.dialogs.OpenFileDialog;
 import lp.edu.ua.sopushynskyi.dialogs.PatientsDialog;
+import lp.edu.ua.sopushynskyi.dialogs.SettingsDialog;
 import lp.edu.ua.sopushynskyi.dicom.DCMData;
 import lp.edu.ua.sopushynskyi.dicom.NetworkService;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -270,8 +271,10 @@ public class MyActivity extends Activity {
                 PatientsDialog patientsDialog = new PatientsDialog(this);
                 patientsDialog.setUrl(stringUrl);
                 patientsDialog.show();
-
-
+                return true;
+            case R.id.action_settings:
+                SettingsDialog settingsDialog = new SettingsDialog(this);
+                settingsDialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

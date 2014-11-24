@@ -152,7 +152,6 @@ public class PatientDataDialog extends AlertDialog.Builder {
                 OutputStream output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/" + patientDataList.get(selectedIndex).getName());
 
                 byte data[] = new byte[1024];
-
                 long total = 0;
 
                 while ((count = input.read(data)) != -1) {
@@ -169,7 +168,6 @@ public class PatientDataDialog extends AlertDialog.Builder {
                 e.printStackTrace();
             }
             return null;
-
         }
 
         @Override

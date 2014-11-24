@@ -21,4 +21,10 @@
     <string name="data_received">Дані отримано</string>
     <string name="cant_get_patient_data">Неможливо отримати дані пацієнта</string>
     <string name="download">Завантажити</string>
+    <string name="settingsTitle">Налаштування</string>
+    <string name="save">Зберегти</string>
+    <string name="serverURL">URL сервера</string>
+    <string name="preference_server_url">serverURL</string>
+    <string name="preference_file_key"></string>
+    <string name="defaultServerURL">http://192.168.0.101:9000</string>
 </resources>
