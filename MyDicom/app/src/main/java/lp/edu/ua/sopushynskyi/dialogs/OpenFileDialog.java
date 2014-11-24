@@ -45,7 +45,7 @@ public class OpenFileDialog extends AlertDialog.Builder {
     private ListView listView;
     private FilenameFilter filenameFilter;
     private int selectedIndex = -1;
-    private OpenDialogListener listener;
+    private DialogListener listener;
     public static SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 
     public OpenFileDialog(Context context) {
@@ -67,7 +67,7 @@ public class OpenFileDialog extends AlertDialog.Builder {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (selectedIndex > -1 && listener != null) {
-                            listener.OnSelectedFile(listView.getItemAtPosition(selectedIndex).toString());
+                            listener.OnSelectedResult(listView.getItemAtPosition(selectedIndex).toString());
                         }
                     }
                 });
@@ -224,13 +224,9 @@ public class OpenFileDialog extends AlertDialog.Builder {
         return listView;
     }
 
-    public OpenFileDialog setOpenDialogListener(OpenDialogListener listener) {
+    public OpenFileDialog setOpenDialogListener(DialogListener listener) {
         this.listener = listener;
         return this;
-    }
-
-    public interface OpenDialogListener {
-        public void OnSelectedFile(String fileName);
     }
 
     private class FileAdapter extends ArrayAdapter<File> {

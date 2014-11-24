@@ -1,6 +1,5 @@
 package lp.edu.ua.sopushynskyi.dialogs;
 
-
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -50,6 +49,7 @@ public class PatientDataDialog extends AlertDialog.Builder {
     private Integer selectedIndex = -1;
     private PatientDataAdapter adapter;
     private ProgressDialog mProgressDialog;
+    private DialogListener listener;
 
     public PatientDataDialog(final Context context, PatientElement patientElement, String url) {
         super(context);
@@ -123,10 +123,14 @@ public class PatientDataDialog extends AlertDialog.Builder {
 
     private void showProgressDialog() {
         mProgressDialog = new ProgressDialog(getContext());
-        mProgressDialog.setMessage("Downloading file..");
+        mProgressDialog.setMessage(getContext().getString(R.string.downloading));
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
         mProgressDialog.show();
+    }
+
+    public void setListener(DialogListener listener) {
+        this.listener = listener;
     }
 
     private class GetPatientImageTask extends AsyncTask<String, Integer, String> {
@@ -142,14 +146,16 @@ public class PatientDataDialog extends AlertDialog.Builder {
             int count;
 
             try {
-                URL url = new URL(urls[0] + String.format("/image?id=%s&filePath=%s", patientElement.getId(), patientDataList.get(selectedIndex).getName()));
+                URL url = new URL(urls[0] + String.format("/image?id=%s&filePath=%s",
+                        patientElement.getId(), patientDataList.get(selectedIndex).getName()));
                 URLConnection conexion = url.openConnection();
                 conexion.connect();
 
                 int lenghtOfFile = conexion.getContentLength();
 
                 InputStream input = new BufferedInputStream(url.openStream());
-                OutputStream output = new FileOutputStream(Environment.getExternalStorageDirectory() + "/" + patientDataList.get(selectedIndex).getName());
+                OutputStream output = new FileOutputStream(Environment.getExternalStorageDirectory()
+                        + "/" + patientDataList.get(selectedIndex).getName());
 
                 byte data[] = new byte[1024];
                 long total = 0;
@@ -177,6 +183,8 @@ public class PatientDataDialog extends AlertDialog.Builder {
 
         @Override
         protected void onPostExecute(String entity) {
+            listener.OnSelectedResult(Environment.getExternalStorageDirectory()
+                    + "/" + patientDataList.get(selectedIndex).getName());
             mProgressDialog.dismiss();
         }
     }

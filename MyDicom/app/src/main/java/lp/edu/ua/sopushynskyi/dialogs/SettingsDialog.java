@@ -10,10 +10,11 @@ import android.widget.EditText;
 
 import com.example.mykola.mydicom.R;
 
+import lp.edu.ua.sopushynskyi.activities.Settings;
+
 public class SettingsDialog extends AlertDialog.Builder {
     private EditText serverURLEdit;
     private Context context;
-    private SharedPreferences sharedPref;
 
     public SettingsDialog(final Context context) {
         super(context);
@@ -21,8 +22,6 @@ public class SettingsDialog extends AlertDialog.Builder {
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.app_settings, null);
-        sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key),
-                Context.MODE_PRIVATE);
         serverURLEdit = (EditText) view.findViewById(R.id.serverURL);
 
         setView(view)
@@ -31,18 +30,10 @@ public class SettingsDialog extends AlertDialog.Builder {
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(context.getString(R.string.preference_server_url), serverURLEdit.getText().toString());
-                        editor.commit();
+                        Settings.saveServerURL(context, serverURLEdit.getText().toString());
                     }
                 });
 
-        loadSharedPreferences();
-    }
-
-    private void loadSharedPreferences() {
-        String defaultServerURL = context.getString(R.string.defaultServerURL);
-        String serverURL = sharedPref.getString(context.getString(R.string.preference_server_url), defaultServerURL);
-        serverURLEdit.setText(serverURL);
+        serverURLEdit.setText(Settings.loadServerURL(context));
     }
 }

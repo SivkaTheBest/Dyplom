@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import java.util.LinkedList;
 import java.util.List;
 
+import lp.edu.ua.sopushynskyi.activities.Settings;
 import lp.edu.ua.sopushynskyi.dialogs.beans.PatientElement;
 import lp.edu.ua.sopushynskyi.dicom.NetworkService;
 
@@ -35,6 +36,7 @@ public class PatientsDialog extends AlertDialog.Builder {
     private ListView listView;
     private EditText patientEdit;
     private PatientDataDialog patientDataDialog;
+    private DialogListener listener;
 
     private List<PatientElement> patientElementList = new LinkedList<PatientElement>();
 
@@ -60,9 +62,21 @@ public class PatientsDialog extends AlertDialog.Builder {
 
                 PatientElement patientElement = adapter.getItem(i);
                 patientDataDialog = new PatientDataDialog(context, patientElement, url);
+
+                patientDataDialog.setListener(new DialogListener() {
+                    @Override
+                    public void OnSelectedResult(String result) {
+                        listener.OnSelectedResult(result);
+
+                    }
+                });
+
                 patientDataDialog.show();
             }
         });
+
+        url = Settings.loadServerURL(context);
+
     }
 
     @Override
@@ -85,15 +99,14 @@ public class PatientsDialog extends AlertDialog.Builder {
         return dialog;
     }
 
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     private void hideKeyBoard() {
         InputMethodManager imm = (InputMethodManager)getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(patientEdit.getWindowToken(), 0);
+    }
+
+    public void setListener(DialogListener listener) {
+        this.listener = listener;
     }
 
     private class GetPatientListTask extends AsyncTask<String, Void, String> {

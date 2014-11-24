@@ -1,18 +1,8 @@
 package lp.edu.ua.sopushynskyi.activities;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.RectF;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,11 +19,11 @@ import android.widget.Toast;
 import com.example.mykola.mydicom.R;
 import lp.edu.ua.sopushynskyi.components.VerticalSeekBar;
 
+import lp.edu.ua.sopushynskyi.dialogs.DialogListener;
 import lp.edu.ua.sopushynskyi.dialogs.OpenFileDialog;
 import lp.edu.ua.sopushynskyi.dialogs.PatientsDialog;
 import lp.edu.ua.sopushynskyi.dialogs.SettingsDialog;
 import lp.edu.ua.sopushynskyi.dicom.DCMData;
-import lp.edu.ua.sopushynskyi.dicom.NetworkService;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class MyActivity extends Activity {
@@ -255,21 +245,28 @@ public class MyActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                OpenFileDialog fileDialog = new OpenFileDialog(this).setFilter(FTYPE).setOpenDialogListener(new OpenFileDialog.OpenDialogListener() {
+                OpenFileDialog fileDialog = new OpenFileDialog(this).setFilter(FTYPE).setOpenDialogListener(new DialogListener() {
                     @Override
-                    public void OnSelectedFile(String fileName) {
-                        mChosenFile = fileName;
+                    public void OnSelectedResult(String result) {
+                        mChosenFile = result;
                         setTitle(mChosenFile);
-                        Toast.makeText(getApplicationContext(), fileName, Toast.LENGTH_LONG).show();
-                        loadDCM(fileName);
+                        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+                        loadDCM(result);
                     }
                 });
                 fileDialog.show();
                 return true;
             case R.id.action_network:
-                String stringUrl = "http://192.168.0.101:9000";
                 PatientsDialog patientsDialog = new PatientsDialog(this);
-                patientsDialog.setUrl(stringUrl);
+                patientsDialog.setListener(new DialogListener() {
+                    @Override
+                    public void OnSelectedResult(String result) {
+                        mChosenFile = result;
+                        setTitle(mChosenFile);
+                        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
+                        loadDCM(result);
+                    }
+                });
                 patientsDialog.show();
                 return true;
             case R.id.action_settings:
