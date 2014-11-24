@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import com.example.mykola.mydicom.R;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.SimpleDateFormat;
@@ -234,13 +236,14 @@ public class OpenFileDialog extends AlertDialog.Builder {
     private class FileAdapter extends ArrayAdapter<File> {
 
         public FileAdapter(Context context, List<File> files) {
-            super(context, android.R.layout.simple_list_item_1, files);
+            super(context, R.layout.patient_data_element, files);
         }
+
+        private LayoutInflater inflater = (LayoutInflater) getContext()
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) getContext()
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             View fileElementView = inflater.inflate(R.layout.patient_data_element, parent, false);
             TextView fileNameView = (TextView) fileElementView.findViewById(R.id.fileName);
@@ -248,17 +251,22 @@ public class OpenFileDialog extends AlertDialog.Builder {
             ImageView icon = (ImageView) fileElementView.findViewById(R.id.icon);
 
             File file = getItem(position);
-            if (file.getAbsolutePath().equals(new File(currentPath).getParentFile().getAbsolutePath())) {
+            String filePath = file.getAbsolutePath();
+            String parentFilePath = new File(currentPath).getParentFile().getAbsolutePath();
+            String fileDate = sdf.format(file.lastModified());
+            boolean isDirectory = file.isDirectory();
+
+            if (StringUtils.equals(filePath, parentFilePath)) {
                 fileNameView.setText(R.string.up);
                 fileDateView.setText(R.string.up_text);
                 icon.setImageResource(R.drawable.ic_up);
             } else {
                 fileNameView.setText(file.getName());
-                if(file.isDirectory()) {
+                if(isDirectory) {
                     fileDateView.setText(R.string.folder);
                     icon.setImageResource(R.drawable.ic_folder);
                 } else {
-                    fileDateView.setText(sdf.format(file.lastModified()));
+                    fileDateView.setText(fileDate);
                     icon.setImageResource(R.drawable.ic_image_dcm);
                 }
             }
@@ -271,5 +279,4 @@ public class OpenFileDialog extends AlertDialog.Builder {
             return fileElementView;
         }
     }
-
 }

@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.util.LinkedList;
 import java.util.List;
 
-import lp.edu.ua.sopushynskyi.dialogs.utils.PatientElement;
+import lp.edu.ua.sopushynskyi.dialogs.beans.PatientElement;
 import lp.edu.ua.sopushynskyi.dicom.NetworkService;
 
 public class PatientsDialog extends AlertDialog.Builder {
@@ -78,7 +78,7 @@ public class PatientsDialog extends AlertDialog.Builder {
                 if (networkInfo != null && networkInfo.isConnected()) {
                     new GetPatientListTask().execute(url);
                 } else {
-                    Toast.makeText(getContext(), "Немає підключення до мережі", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), R.string.no_network, Toast.LENGTH_SHORT).show();
                 }
             }
         });

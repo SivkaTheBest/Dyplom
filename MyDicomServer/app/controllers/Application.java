@@ -8,8 +8,6 @@ import play.mvc.*;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Application extends Controller {
 
@@ -84,7 +82,7 @@ public class Application extends Controller {
 
         File file = new File(dataFile);
         if(file.exists()) {
-            renderBinary(file, id + " " + sdf.format(file.lastModified()) + ".dcm");
+            renderBinary(file, String.format("[%s] %s.dcm", id, sdf.format(file.lastModified())));
         } else {
             notFound();
         }

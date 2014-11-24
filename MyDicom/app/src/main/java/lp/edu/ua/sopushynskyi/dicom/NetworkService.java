@@ -8,7 +8,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -37,7 +40,6 @@ public class NetworkService {
             HttpGet httpGet = new HttpGet(url);
 
             httpResponse = httpClient.execute(httpGet);
-
             httpEntity = httpResponse.getEntity();
             response = EntityUtils.toString(httpEntity);
 

@@ -17,4 +17,8 @@
     <string name="folder">папка</string>
     <string name="up">..</string>
     <string name="up_text">назад</string>
+    <string name="no_network">Немає підключення до мережі</string>
+    <string name="data_received">Дані отримано</string>
+    <string name="cant_get_patient_data">Неможливо отримати дані пацієнта</string>
+    <string name="download">Завантажити</string>
 </resources>
