@@ -29,21 +29,21 @@
             android:layout_width="100px"
             android:layout_height="100px"
             android:layout_alignParentBottom="true"
-            android:text="R" />
+            android:text="@string/rainbow_letter" />
 
         <Button
             android:id="@+id/inverse"
             android:layout_width="100px"
             android:layout_height="100px"
             android:layout_above="@+id/rainbow"
-            android:text="I" />
+            android:text="@string/inverse_letter" />
 
         <Button
             android:id="@+id/normal"
             android:layout_width="100px"
             android:layout_height="100px"
             android:layout_above="@+id/inverse"
-            android:text="N" />
+            android:text="@string/normal_letter" />
     </RelativeLayout>
 
     <TextView

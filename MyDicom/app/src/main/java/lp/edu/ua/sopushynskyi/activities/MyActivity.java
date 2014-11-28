@@ -35,10 +35,11 @@ public class MyActivity extends Activity {
     PhotoViewAttacher mAttacher;
     VerticalSeekBar contrastBar;
     VerticalSeekBar brightnessBar;
-    Activity self = this;
 
     private String mChosenFile;
     private DCMData dcmData = new DCMData();
+    private OpenFileDialog openFileDialog;
+    private PatientsDialog patientsDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -245,7 +246,7 @@ public class MyActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                OpenFileDialog fileDialog = new OpenFileDialog(this).setFilter(FTYPE).setOpenDialogListener(new DialogListener() {
+                openFileDialog = new OpenFileDialog(this).setFilter(FTYPE).setOpenDialogListener(new DialogListener() {
                     @Override
                     public void OnSelectedResult(String result) {
                         mChosenFile = result;
@@ -254,10 +255,10 @@ public class MyActivity extends Activity {
                         loadDCM(result);
                     }
                 });
-                fileDialog.show();
+                openFileDialog.show();
                 return true;
             case R.id.action_network:
-                PatientsDialog patientsDialog = new PatientsDialog(this);
+                patientsDialog = new PatientsDialog(this);
                 patientsDialog.setListener(new DialogListener() {
                     @Override
                     public void OnSelectedResult(String result) {

@@ -8,10 +8,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import java.io.BufferedOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -56,11 +53,11 @@ public class NetworkService {
 
     private String formatParams(Map<String, String> params) {
         String result = "";
-        for(String key: params.keySet()) {
+        for (String key : params.keySet()) {
             try {
-                if(StringUtils.isEmpty(result))
+                if (StringUtils.isEmpty(result))
                     result += "&";
-                result +=  URLEncoder.encode(String.format("%s=%s", key,params.get(key)),"UTF-8");
+                result += URLEncoder.encode(String.format("%s=%s", key, params.get(key)), "UTF-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

@@ -111,12 +111,11 @@ public class PatientsDialog extends AlertDialog.Builder {
 
     private class GetPatientListTask extends AsyncTask<String, Void, String> {
         private final String ATTR_ID = "id";
-
+        private final NetworkService network = new NetworkService();;
         private final String ATTR_NAME = "name";
 
         @Override
         protected String doInBackground(String... urls) {
-            NetworkService network = new NetworkService();
             return network.makeServiceCall(urls[0] + "/patients");
         }
         @Override
