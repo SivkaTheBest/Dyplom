@@ -55,7 +55,6 @@ public class OpenFileDialog extends AlertDialog.Builder {
         title = createTitle(context);
         changeTitle();
         LinearLayout linearLayout = createMainLayout(context);
-        files.addAll(getFiles(currentPath));
         listView = createListView(context);
         listView.setAdapter(new FileAdapter(context, files));
 
@@ -160,9 +159,8 @@ public class OpenFileDialog extends AlertDialog.Builder {
     private void RebuildFiles(ArrayAdapter<File> adapter) {
         try {
             selectedIndex = -1;
-            List<File> fileList = getFiles(currentPath);
             files.clear();
-            files.addAll(fileList);
+            files.addAll(getFiles(currentPath));
             adapter.notifyDataSetChanged();
             changeTitle();
         } catch (NullPointerException e) {
