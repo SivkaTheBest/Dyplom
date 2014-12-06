@@ -35,6 +35,7 @@ public class MyActivity extends Activity {
     PhotoViewAttacher mAttacher;
     VerticalSeekBar contrastBar;
     VerticalSeekBar brightnessBar;
+    SettingsDialog settingsDialog;
 
     private String mChosenFile;
     private DCMData dcmData = new DCMData();
@@ -49,7 +50,6 @@ public class MyActivity extends Activity {
         Button normal = (Button) findViewById(R.id.normal);
         Button inverse = (Button) findViewById(R.id.inverse);
         Button rainbow = (Button) findViewById(R.id.rainbow);
-
         Button next = (Button) findViewById(R.id.next);
         Button prev = (Button) findViewById(R.id.previous);
 
@@ -258,8 +258,7 @@ public class MyActivity extends Activity {
                 openFileDialog.show();
                 return true;
             case R.id.action_network:
-                patientsDialog = new PatientsDialog(this);
-                patientsDialog.setListener(new DialogListener() {
+                patientsDialog = new PatientsDialog(this).setListener(new DialogListener() {
                     @Override
                     public void OnSelectedResult(String result) {
                         mChosenFile = result;
@@ -271,7 +270,7 @@ public class MyActivity extends Activity {
                 patientsDialog.show();
                 return true;
             case R.id.action_settings:
-                SettingsDialog settingsDialog = new SettingsDialog(this);
+                settingsDialog = new SettingsDialog(this);
                 settingsDialog.show();
                 return true;
             default:

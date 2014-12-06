@@ -133,8 +133,6 @@ public class DCMData {
         }
     }
 
-
-
     public Bitmap getFrame() {
         if(frames.size() != 0) {
             return frames.get(currentFrame).getBitmap(isInverted(),

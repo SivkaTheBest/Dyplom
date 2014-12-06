@@ -105,13 +105,14 @@ public class PatientsDialog extends AlertDialog.Builder {
         imm.hideSoftInputFromWindow(patientEdit.getWindowToken(), 0);
     }
 
-    public void setListener(DialogListener listener) {
+    public PatientsDialog setListener(DialogListener listener) {
         this.listener = listener;
+        return this;
     }
 
     private class GetPatientListTask extends AsyncTask<String, Void, String> {
         private final String ATTR_ID = "id";
-        private final NetworkService network = new NetworkService();;
+        private final NetworkService network = new NetworkService();
         private final String ATTR_NAME = "name";
 
         @Override

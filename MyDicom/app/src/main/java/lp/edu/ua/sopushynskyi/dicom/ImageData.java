@@ -1,7 +1,6 @@
 package lp.edu.ua.sopushynskyi.dicom;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 
 public class ImageData {
     private int[] buffer;
@@ -50,20 +49,60 @@ public class ImageData {
     }
 
     private void rainbowImage(boolean isRainbowed) {
-        float hsb[] = new float[3];
-
         if (isRainbowed) {
             int length = sizeX * sizeY;
-            int value;
-            hsb[1] = 1f;
+            int brightness;
+            float hue;
+            int r = 0, g = 0, b = 0;
+            double h;
+            double f;
+            double q;
+            double t;
 
             for (int i = 0; i < length; i++) {
-                value = workBuffer[i] & 0x000000ff;
+                brightness = workBuffer[i] & 0x000000ff;
+                hue = (255f - (float) brightness) / 255;
 
-                hsb[0] = (255f - (float) value) / 255;
-                hsb[2] = (float) value / 255;
+                h = (hue - (int)(hue)) * 6.0f;
+                f = h - (int)h;
 
-                workBuffer[i] = hsbToColor(hsb[0], hsb[2]);
+                q = brightness * (1.0f - f);
+                t = brightness * f;
+
+                switch ((int) h) {
+                    case 0:
+                        r = brightness;
+                        g = (int) t;
+                        b = 0;
+                        break;
+                    case 1:
+                        r = (int) q;
+                        g = brightness;
+                        b = 0;
+                        break;
+                    case 2:
+                        r = 0;
+                        g = brightness;
+                        b = (int) t;
+                        break;
+                    case 3:
+                        r = 0;
+                        g = (int) q;
+                        b = brightness;
+                        break;
+                    case 4:
+                        r = (int) t;
+                        g = 0;
+                        b = brightness;
+                        break;
+                    case 5:
+                        r = brightness;
+                        g = 0;
+                        b = (int) q;
+                        break;
+                }
+
+                workBuffer[i] = 0xff000000 | (r << 16) | (g << 8) | (b << 0);
             }
         }
     }
@@ -82,7 +121,7 @@ public class ImageData {
                 value = 255;
             }
 
-            workBuffer[i] = Color.rgb(value, value, value);
+            workBuffer[i] = 0xff000000 | (value << 16) | (value << 8) | (value << 0);
         }
     }
 
@@ -101,53 +140,9 @@ public class ImageData {
                     value = 0;
                 }
 
-                workBuffer[i] = Color.rgb(value, value, value);
+                workBuffer[i] = 0xff000000 | (value << 16) | (value << 8) | (value << 0);
             }
         }
     }
 
-    private int hsbToColor(float hue, float brightness) {
-        int r = 0, g = 0, b = 0;
-
-        double h = (hue -  StrictMath.floor(hue)) * 6.0f;
-        double f = h -  StrictMath.floor(h);
-
-        double q = brightness * (1.0f - f) * 255.0f + 0.5f;
-        double t = brightness * f * 255.0f + 0.5f;
-
-        switch ((int) h) {
-            case 0:
-                r = (int) (brightness * 255.0f + 0.5f);
-                g = (int) t;
-                b = 0;
-                break;
-            case 1:
-                r = (int) q;
-                g = (int) (brightness * 255.0f + 0.5f);
-                b = 0;
-                break;
-            case 2:
-                r = 0;
-                g = (int) (brightness * 255.0f + 0.5f);
-                b = (int) t;
-                break;
-            case 3:
-                r = 0;
-                g = (int) q;
-                b = (int) (brightness * 255.0f + 0.5f);
-                break;
-            case 4:
-                r = (int) t;
-                g = 0;
-                b = (int) (brightness * 255.0f + 0.5f);
-                break;
-            case 5:
-                r = (int) (brightness * 255.0f + 0.5f);
-                g = 0;
-                b = (int) q;
-                break;
-        }
-
-        return 0xff000000 | (r << 16) | (g << 8) | (b << 0);
-    }
 }
