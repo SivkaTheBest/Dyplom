@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Мобільний термінал DICOM</string>
-    <string name="action_find">Пошук</string>
+    <string name="action_find">Пошук пацієнта</string>
     <string name="image_info">Інформація про зображення</string>
     <string name="inverse">Негатив</string>
     <string name="rainbow">Псевдоколір</string>
