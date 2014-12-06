@@ -97,10 +97,7 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(View v) {
                 dcmData.inverse();
-                //long start = System.currentTimeMillis();
                 redrawImage();
-               // long end = System.currentTimeMillis();
-                //Toast.makeText(getApplicationContext(), String.format("inverse %d ms",(end - start)), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -108,11 +105,7 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(View v) {
                 dcmData.rainbow();
-
-                //long start = System.currentTimeMillis();
                 redrawImage();
-                //long end = System.currentTimeMillis();
-               // Toast.makeText(getApplicationContext(), String.format("rainbow %d ms",(end - start)), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -120,11 +113,7 @@ public class MyActivity extends Activity {
             @Override
             public void onClick(View v) {
                 dcmData.normal();
-
-                //long start = System.currentTimeMillis();
                 redrawImage();
-                //long end = System.currentTimeMillis();
-                //Toast.makeText(getApplicationContext(), String.format("normal %d ms",(end - start)), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -150,11 +139,7 @@ public class MyActivity extends Activity {
         contrastBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 dcmData.setContrast(progress / 100f * 2 + 0.5f);
-
-                //long start = System.currentTimeMillis();
                 redrawImage();
-                //long end = System.currentTimeMillis();
-                //Toast.makeText(getApplicationContext(), String.format("contrast %d ms",(end - start)), Toast.LENGTH_SHORT).show();
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
@@ -179,11 +164,7 @@ public class MyActivity extends Activity {
         brightnessBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 dcmData.setBrightness((int)(progress / 100f * 500) - 250);
-
-                //long start = System.currentTimeMillis();
                 redrawImage();
-                //long end = System.currentTimeMillis();
-                //Toast.makeText(getApplicationContext(), String.format("brightness %d ms",(end - start)), Toast.LENGTH_SHORT).show();
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {

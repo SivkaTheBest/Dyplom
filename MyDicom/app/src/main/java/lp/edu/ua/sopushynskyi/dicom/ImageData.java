@@ -1,6 +1,7 @@
 package lp.edu.ua.sopushynskyi.dicom;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 public class ImageData {
     private int[] buffer;
@@ -25,10 +26,35 @@ public class ImageData {
 
     public Bitmap getBitmap(boolean isInverted, boolean isRainbowed, double contrast, int brightness) {
         copyBuffer();
+
+        long start;
+        long end;
+
+
+        start = System.currentTimeMillis();
         contrastImage(contrast);
+        end = System.currentTimeMillis();
+        if(end - start != 0)
+            Log.d("time", String.format("%d(мс) контраст", end - start));
+
+        start = System.currentTimeMillis();
         brightImage(brightness);
+        end = System.currentTimeMillis();
+        if(end - start != 0)
+            Log.d("time", String.format("%d(мс) яскравість", end - start));
+
+        start = System.currentTimeMillis();
         invertImage(isInverted);
+        end = System.currentTimeMillis();
+        if(end - start != 0)
+            Log.d("time", String.format("%d(мс) негатив", end - start));
+
+        start = System.currentTimeMillis();
         rainbowImage(isRainbowed);
+        end = System.currentTimeMillis();
+        if(end - start != 0)
+            Log.d("time", String.format("%d(мс) псевдо", end - start));
+
 
         return Bitmap.createBitmap(workBuffer, sizeX, sizeY, Bitmap.Config.RGB_565);
     }
@@ -108,20 +134,22 @@ public class ImageData {
     }
 
     private void contrastImage(double contrast) {
-        int value;
-        int length = sizeX * sizeY;
+        if(contrast != 1) {
+            int value;
+            int length = sizeX * sizeY;
 
-        for (int i = 0; i < length; i++) {
-            value = workBuffer[i] & 0x000000ff;
+            for (int i = 0; i < length; i++) {
+                value = workBuffer[i] & 0x000000ff;
 
-            value = (int) (((((value / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
-            if (value < 0) {
-                value = 0;
-            } else if (value > 255) {
-                value = 255;
+                value = (int) (((((value / 255.0) - 0.5) * contrast) + 0.5) * 255.0);
+                if (value < 0) {
+                    value = 0;
+                } else if (value > 255) {
+                    value = 255;
+                }
+
+                workBuffer[i] = 0xff000000 | (value << 16) | (value << 8) | (value << 0);
             }
-
-            workBuffer[i] = 0xff000000 | (value << 16) | (value << 8) | (value << 0);
         }
     }
 
